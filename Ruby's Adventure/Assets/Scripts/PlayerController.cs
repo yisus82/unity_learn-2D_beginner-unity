@@ -1,29 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
+    [FormerlySerializedAs("MoveAction")] public InputAction moveAction;
+    
+    private void Start()
+    {
+        moveAction.Enable();
+    }
+    
     private void Update()
     {
-        float horizontal= 0.0f;
-        if (Keyboard.current.leftArrowKey.isPressed)
-        {
-            horizontal = -1.0f;
-        } else if (Keyboard.current.rightArrowKey.isPressed)
-        {
-            horizontal = 1.0f;
-        }
-        float vertical = 0.0f;
-        if (Keyboard.current.downArrowKey.isPressed)
-        {
-            vertical = -1.0f;
-        } else if (Keyboard.current.upArrowKey.isPressed)
-        {
-            vertical = 1.0f;
-        }
-        Vector2 position = transform.position;
-        position.x = position.x + 0.1f * horizontal;
-        position.y = position.y + 0.1f * vertical;
+        var move = moveAction.ReadValue<Vector2>();
+        var position = (Vector2)transform.position + move * 0.1f;
         transform.position = position;
     }
 }
