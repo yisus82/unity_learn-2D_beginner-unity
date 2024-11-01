@@ -1,29 +1,41 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    public int health {get { return _currentHealth; }}
+    public int health { get; private set; }
+
     public int maxHealth = 5;
     public float speed = 3.0f;
+    public float timeInvincible = 2.0f;
+    
     [FormerlySerializedAs("MoveAction")] public InputAction moveAction;
     
     private Rigidbody2D _rigidbody2d;
     private Vector2 _movement;
-    private int _currentHealth;
-    
+    private bool _isInvincible;
+    private float _invincibleTimer;
+
     private void Start()
     {
         moveAction.Enable();
         _rigidbody2d = GetComponent<Rigidbody2D>();
-        _currentHealth = maxHealth;
+        health = maxHealth;
     }
     
     private void Update()
     {
         _movement = moveAction.ReadValue<Vector2>();
+        if (!_isInvincible)
+        {
+            return;
+        }
+        _invincibleTimer -= Time.deltaTime;
+        if (_invincibleTimer < 0)
+        {
+            _isInvincible = false;
+        }
     }
     
     private void FixedUpdate()
@@ -33,7 +45,18 @@ public class PlayerController : MonoBehaviour
     
     public void ChangeHealth(int amount)
     {
-        _currentHealth = Mathf.Clamp(_currentHealth + amount, 0, maxHealth);
-        Debug.Log(_currentHealth + "/" + maxHealth);
+        if (amount < 0)
+        {
+            if (_isInvincible)
+            {
+                return;
+            }
+            
+            _isInvincible = true;
+            _invincibleTimer = timeInvincible;
+        }
+        
+        health = Mathf.Clamp(health + amount, 0, maxHealth);
+        Debug.Log(health + "/" + maxHealth);
     }
 }
