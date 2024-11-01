@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    private static readonly int MoveX = Animator.StringToHash("MoveX");
+    private static readonly int MoveY = Animator.StringToHash("MoveY");
+
     public enum Direction
     {
         Up,
@@ -20,6 +23,7 @@ public class EnemyController : MonoBehaviour
     private float _timer;
     private Direction _direction;
     private bool _vertical = true;
+    private Animator _animator;
 
     private void Start()
     {
@@ -27,8 +31,26 @@ public class EnemyController : MonoBehaviour
         _timer = changeTime;
         _direction = initialDirection;
         _vertical = initialDirection is Direction.Up or Direction.Down;
+        _animator = GetComponent<Animator>();
+        SetAnimation();
     }
-
+    
+    private void SetAnimation()
+    {
+        _animator.SetFloat(MoveX, _direction switch
+        {
+            Direction.Right => 1,
+            Direction.Left => -1,
+            _ => 0
+        });
+        _animator.SetFloat(MoveY, _direction switch
+        {
+            Direction.Up => 1,
+            Direction.Down => -1,
+            _ => 0
+        });
+    }
+    
     private void Update()
     {
         _timer -= Time.deltaTime;
@@ -45,6 +67,7 @@ public class EnemyController : MonoBehaviour
         {
             _direction = _direction == Direction.Right ? Direction.Left : Direction.Right;
         }
+        SetAnimation();
         
         _timer = changeTime;
     }
