@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,13 +7,16 @@ public class PlayerController : MonoBehaviour
     private static readonly int MoveY = Animator.StringToHash("MoveY");
     private static readonly int Speed = Animator.StringToHash("Speed");
     private static readonly int Hit = Animator.StringToHash("Hit");
+    private static readonly int Launch = Animator.StringToHash("Launch");
     public int health { get; private set; }
 
     public int maxHealth = 5;
     public float speed = 3.0f;
     public float timeInvincible = 2.0f;
+    public GameObject projectilePrefab;
     
-    [FormerlySerializedAs("MoveAction")] public InputAction moveAction;
+    public InputAction moveAction;
+    public InputAction launchAction;
     
     private Rigidbody2D _rigidbody2d;
     private Vector2 _movement;
@@ -22,13 +24,17 @@ public class PlayerController : MonoBehaviour
     private float _invincibleTimer;
     private Animator _animator;
     private Vector2 _moveDirection;
+    private Transform _projectiles;
 
     private void Start()
     {
         moveAction.Enable();
+        launchAction.Enable();
+        launchAction.performed += LaunchProjectile;
         health = maxHealth;
         _rigidbody2d = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+        _projectiles = GameObject.FindGameObjectWithTag("Projectiles").transform;
     }
     
     private void Update()
@@ -77,5 +83,13 @@ public class PlayerController : MonoBehaviour
         
         health = Mathf.Clamp(health + amount, 0, maxHealth);
         UIHandler.instance.SetHealthValue(health / (float)maxHealth);
+    }
+
+    private void LaunchProjectile(InputAction.CallbackContext context)
+    {
+        var projectileObject = Instantiate(projectilePrefab, _rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity, _projectiles);
+        var projectile = projectileObject.GetComponent<Projectile>();
+        projectile.Launch(_moveDirection, 300);
+        _animator.SetTrigger(Launch);
     }
 }

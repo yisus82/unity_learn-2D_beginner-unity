@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4142401590782637617}
   - component: {fileID: 1881121852933830260}
   - component: {fileID: 8748906912214417489}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ruby
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -103,6 +103,8 @@ MonoBehaviour:
   maxHealth: 5
   speed: 3
   timeInvincible: 2
+  projectilePrefab: {fileID: 5041243255518090823, guid: 7057c6c15a26d4b11a66384573c8d27e,
+    type: 3}
   moveAction:
     m_Name: Move
     m_Type: 0
@@ -191,6 +193,23 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Move
       m_Flags: 8
+    m_Flags: 0
+  launchAction:
+    m_Name: Launch
+    m_Type: 1
+    m_ExpectedControlType: Button
+    m_Id: 4aa42728-4f99-4b10-9543-b76b88bf9ea3
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: b1e92e7d-0986-4ed1-a062-2d2b168e11e5
+      m_Path: <Keyboard>/space
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Launch
+      m_Flags: 0
     m_Flags: 0
 --- !u!50 &4142401590782637617
 Rigidbody2D:

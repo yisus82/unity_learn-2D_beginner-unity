@@ -5,6 +5,7 @@ public class EnemyController : MonoBehaviour
 {
     private static readonly int MoveX = Animator.StringToHash("MoveX");
     private static readonly int MoveY = Animator.StringToHash("MoveY");
+    private static readonly int Fixed = Animator.StringToHash("Fixed");
 
     public enum Direction
     {
@@ -24,6 +25,7 @@ public class EnemyController : MonoBehaviour
     private Direction _direction;
     private bool _vertical = true;
     private Animator _animator;
+    private bool _isFixed = false;
 
     private void Start()
     {
@@ -53,6 +55,11 @@ public class EnemyController : MonoBehaviour
     
     private void Update()
     {
+        if (_isFixed)
+        {
+            return;
+        }
+        
         _timer -= Time.deltaTime;
         if (_timer > 0)
         {
@@ -73,7 +80,12 @@ public class EnemyController : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {    
+    {   
+        if (_isFixed)
+        {
+            return;
+        }
+        
         var position = _rigidbody2d.position;
      
         switch (_direction)
@@ -112,5 +124,12 @@ public class EnemyController : MonoBehaviour
         }
 
         player.ChangeHealth(-damageAmount);
+    }
+    
+    public void Fix()
+    {
+        _isFixed = true;
+        _rigidbody2d.bodyType = RigidbodyType2D.Static;
+        _animator.SetTrigger(Fixed);
     }
 }
