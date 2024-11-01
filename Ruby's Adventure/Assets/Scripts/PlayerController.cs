@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
+    public int health {get { return _currentHealth; }}
     public int maxHealth = 5;
     public float speed = 3.0f;
     [FormerlySerializedAs("MoveAction")] public InputAction moveAction;
