@@ -57,6 +57,6 @@ public class PlayerController : MonoBehaviour
         }
         
         health = Mathf.Clamp(health + amount, 0, maxHealth);
-        Debug.Log(health + "/" + maxHealth);
+        UIHandler.instance.SetHealthValue(health / (float)maxHealth);
     }
 }
