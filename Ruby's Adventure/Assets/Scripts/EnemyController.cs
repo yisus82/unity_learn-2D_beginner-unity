@@ -28,6 +28,7 @@ public class EnemyController : MonoBehaviour
     private Animator _animator;
     private bool _isFixed = false;
     private AudioSource _audioSource;
+    private ParticleSystem _particleSystem;
 
     private void Start()
     {
@@ -37,6 +38,7 @@ public class EnemyController : MonoBehaviour
         _vertical = initialDirection is Direction.Up or Direction.Down;
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
+        _particleSystem = GetComponentInChildren<ParticleSystem>();
         SetAnimation();
     }
     
@@ -114,11 +116,6 @@ public class EnemyController : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if(_isFixed)
-        {
-            return;
-        }
-        
         var player = other.gameObject.GetComponent<PlayerController>();
 
         if (player == null)
@@ -138,8 +135,10 @@ public class EnemyController : MonoBehaviour
     {
         _isFixed = true;
         _rigidbody2d.bodyType = RigidbodyType2D.Static;
+        _rigidbody2d.simulated = false;
         _animator.SetTrigger(Fixed);
         _audioSource.Stop();
         _audioSource.PlayOneShot(fixedClip);
+        _particleSystem.Stop();
     }
 }
