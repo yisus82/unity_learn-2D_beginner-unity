@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     
     public InputAction moveAction;
     public InputAction launchAction;
+    public InputAction talkAction;
     
     private Rigidbody2D _rigidbody2d;
     private Vector2 _movement;
@@ -31,6 +32,8 @@ public class PlayerController : MonoBehaviour
         moveAction.Enable();
         launchAction.Enable();
         launchAction.performed += LaunchProjectile;
+        talkAction.Enable();
+        talkAction.performed += Talk;
         health = maxHealth;
         _rigidbody2d = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
@@ -91,5 +94,20 @@ public class PlayerController : MonoBehaviour
         var projectile = projectileObject.GetComponent<Projectile>();
         projectile.Launch(_moveDirection, 300);
         _animator.SetTrigger(Launch);
+    }
+
+    private void Talk(InputAction.CallbackContext context)
+    {
+        var hit = Physics2D.Raycast(_rigidbody2d.position + Vector2.up * 0.2f, _moveDirection, 1.5f,
+            LayerMask.GetMask("NPC"));
+        if (hit.collider == null)
+        {
+            return;
+        }
+
+        if (hit.collider.gameObject.CompareTag("NPC"))
+        {
+            UIHandler.instance.DisplayDialogue();
+        }
     }
 }
