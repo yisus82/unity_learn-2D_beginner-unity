@@ -3,6 +3,7 @@ using UnityEngine;
 public class HealthCollectible : MonoBehaviour
 {
     public int healthAmount = 1;
+    public AudioClip collectedClip;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -19,6 +20,7 @@ public class HealthCollectible : MonoBehaviour
         }
         
         player.ChangeHealth(healthAmount);
+        player.PlaySound(collectedClip);
         Destroy(gameObject);
     }
 }

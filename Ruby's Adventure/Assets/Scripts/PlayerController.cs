@@ -14,18 +14,22 @@ public class PlayerController : MonoBehaviour
     public float speed = 3.0f;
     public float timeInvincible = 2.0f;
     public GameObject projectilePrefab;
+    public AudioClip hitSound;
+    public AudioClip launchSound;
+    public AudioClip walkSound;
     
     public InputAction moveAction;
     public InputAction launchAction;
     public InputAction talkAction;
     
-    private Rigidbody2D _rigidbody2d;
     private Vector2 _movement;
+    private Vector2 _moveDirection;
     private bool _isInvincible;
     private float _invincibleTimer;
+    private Rigidbody2D _rigidbody2d;
     private Animator _animator;
-    private Vector2 _moveDirection;
     private Transform _projectiles;
+    private AudioSource _audioSource;
 
     private void Start()
     {
@@ -38,6 +42,7 @@ public class PlayerController : MonoBehaviour
         _rigidbody2d = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _projectiles = GameObject.FindGameObjectWithTag("Projectiles").transform;
+        _audioSource = GetComponent<AudioSource>();
     }
     
     private void Update()
@@ -47,6 +52,10 @@ public class PlayerController : MonoBehaviour
         {
             _moveDirection = _movement;
             _moveDirection.Normalize();
+            if (!_audioSource.isPlaying)
+            {
+                PlaySound(walkSound);
+            }
         }
         
         _animator.SetFloat(MoveX, _moveDirection.x);
@@ -80,6 +89,7 @@ public class PlayerController : MonoBehaviour
             }
             
             _animator.SetTrigger(Hit);
+            PlaySound(hitSound);
             _isInvincible = true;
             _invincibleTimer = timeInvincible;
         }
@@ -94,6 +104,7 @@ public class PlayerController : MonoBehaviour
         var projectile = projectileObject.GetComponent<Projectile>();
         projectile.Launch(_moveDirection, 300);
         _animator.SetTrigger(Launch);
+        PlaySound(launchSound);
     }
 
     private void Talk(InputAction.CallbackContext context)
@@ -109,5 +120,10 @@ public class PlayerController : MonoBehaviour
         {
             UIHandler.instance.DisplayDialogue();
         }
+    }
+    
+    public void PlaySound(AudioClip clip)
+    {
+        _audioSource.PlayOneShot(clip);
     }
 }

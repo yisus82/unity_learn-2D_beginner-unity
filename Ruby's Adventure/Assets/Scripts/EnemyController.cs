@@ -19,6 +19,7 @@ public class EnemyController : MonoBehaviour
     public Direction initialDirection = Direction.Down;
     public float changeTime = 3.0f;
     public int damageAmount = 1;
+    public AudioClip fixedClip;
   
     private Rigidbody2D _rigidbody2d;
     private float _timer;
@@ -26,6 +27,7 @@ public class EnemyController : MonoBehaviour
     private bool _vertical = true;
     private Animator _animator;
     private bool _isFixed = false;
+    private AudioSource _audioSource;
 
     private void Start()
     {
@@ -34,6 +36,7 @@ public class EnemyController : MonoBehaviour
         _direction = initialDirection;
         _vertical = initialDirection is Direction.Up or Direction.Down;
         _animator = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
         SetAnimation();
     }
     
@@ -136,5 +139,7 @@ public class EnemyController : MonoBehaviour
         _isFixed = true;
         _rigidbody2d.bodyType = RigidbodyType2D.Static;
         _animator.SetTrigger(Fixed);
+        _audioSource.Stop();
+        _audioSource.PlayOneShot(fixedClip);
     }
 }
