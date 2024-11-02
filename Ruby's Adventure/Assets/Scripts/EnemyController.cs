@@ -111,6 +111,11 @@ public class EnemyController : MonoBehaviour
     
     private void OnCollisionEnter2D(Collision2D other)
     {
+        if(_isFixed)
+        {
+            return;
+        }
+        
         var player = other.gameObject.GetComponent<PlayerController>();
 
         if (player == null)
